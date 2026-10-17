@@ -1,6 +1,6 @@
 # bootloader
 
-An A/B bootloader to run on a Nucleo-G474RE MCU from ST. Eventually, a lot more features than just that will be added.
+An A/B bootloader to run on a Nucleo-G474RE mcu from STM. A lot more features than just that will be added such as: Write protection, CAN updates for the app, and eventually, making the bootloader/switching process brickproof (unbrickable and recoverable no matter the state)
 
 > **Status:** work in progress.
 

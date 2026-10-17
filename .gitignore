@@ -57,3 +57,9 @@ dkms.conf
 # STM32CubeIDE build output
 Debug/
 Release/
+SlotA/
+SlotB/
+
+# Eclipse workspace metadata and projects not part of this repo
+.metadata/
+labs_like_msp/

@@ -122,7 +122,7 @@
 #endif /* VECT_TAB_SRAM */
 
 #if !defined(VECT_TAB_OFFSET)
-#define VECT_TAB_OFFSET         0x00008800U     /*!< Vector Table offset field.
+#define VECT_TAB_OFFSET         0x00008000U     /*!< Vector Table offset field.
                                                      This value must be a multiple of 0x200. */
 #endif /* VECT_TAB_OFFSET */
 

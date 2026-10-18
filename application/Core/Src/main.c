@@ -1,9 +1,20 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 15, 2026
+ *      Author: Justin Dubreuil
+ */
+
 #include "main.h"
+#include "metadata.h"
+
+#define CONFIRM_AFTER_MS 5000U  // how long the app must run before it confirms itself
 
 COM_InitTypeDef BspCOMInit;
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void confirm_if_healthy(void);
 
 int main(void)
 {
@@ -30,12 +41,26 @@ int main(void)
 
     while (1)
     {
-    		BSP_LED_Toggle(LED_GREEN);
-    		HAL_Delay(250);
-    		if(count++ % 4 == 0)
-    		{
-    			printf("Hello from STM32 as the APPLICATION!\r\n");
-    		}
+		// Keep the watchdog fed. The bootloader starts it for trial boots; if it
+		// isn't running this write does nothing.
+		IWDG->KR = 0xAAAAU;
+		confirm_if_healthy();
+
+#ifdef APP_SLOT_B
+		BSP_LED_Toggle(LED_GREEN);
+		HAL_Delay(250);
+		if(count++ % 4 == 0)
+		{
+			printf("Hello from STM32 as the APPLICATION B!\r\n");
+		}
+#else
+		BSP_LED_Toggle(LED_GREEN);
+		HAL_Delay(1000);
+		if(count++ % 4 == 0)
+		{
+			printf("Hello from STM32 as the APPLICATION A!\r\n");
+		}
+#endif
     }
 }
 
@@ -83,6 +108,22 @@ static void MX_GPIO_Init(void)
     __HAL_RCC_GPIOF_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
+}
+
+// After running for CONFIRM_AFTER_MS, tell the bootloader this image works.
+// meta_confirm_slot() only writes flash if the slot is still PENDING.
+static void confirm_if_healthy(void)
+{
+	static int done = 0;
+
+	if (done || HAL_GetTick() < CONFIRM_AFTER_MS) return;
+	done = 1;
+
+	uint32_t slot = (SCB->VTOR == SLOT_B_ADDR) ? SLOT_B : SLOT_A;
+	if (!meta_confirm_slot(slot))
+	{
+		printf("WARNING: could not confirm slot %c\r\n", slot == SLOT_B ? 'B' : 'A');
+	}
 }
 
 void Error_Handler(void)

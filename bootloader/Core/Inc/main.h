@@ -1,3 +1,10 @@
+/*
+ * main.h
+ *
+ *  Created on: Oct 12, 2026
+ *      Author: Justin Dubreuil
+ */
+
 #ifndef __MAIN_H
 #define __MAIN_H
 
@@ -8,8 +15,11 @@ extern "C" {
 #include "stm32g4xx_hal.h"
 #include "stm32g4xx_nucleo.h"
 #include <stdio.h>
+#include "metadata.h"
+#include <string.h>
 
 void Error_Handler(void);
+void SystemClock_Config(void);
 
 #define RCC_OSC32_IN_Pin        GPIO_PIN_14
 #define RCC_OSC32_IN_GPIO_Port  GPIOC
